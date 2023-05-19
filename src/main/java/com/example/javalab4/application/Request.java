@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Все заявки на рабоут лифта представляют собой объект этого класса
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -12,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class Request {
     private int startFloor;
     private int endFloor;
+    // находится ли заявка в работе
     private boolean inWork;
     private int elevatorNumber;
 }

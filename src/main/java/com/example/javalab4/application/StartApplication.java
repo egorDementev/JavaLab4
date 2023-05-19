@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * Класс отвечает за запуск приложения: создание модели, viewModelProvider и viewHandler
+ * Класс отвечает за запуск приложения: создание модели, ViewModelProvider и viewHandler
  */
 public class StartApplication {
 

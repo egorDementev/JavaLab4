@@ -9,6 +9,9 @@ import lombok.Getter;
 
 import java.io.IOException;
 
+/**
+ * Класс осуществляет переключение между вью
+ */
 @Getter
 public class ViewHandler {
     private final Stage stage;
@@ -20,6 +23,10 @@ public class ViewHandler {
         viewModelProvider.instantiateViewModels(this);
     }
 
+    /**
+     * Открытие стартового окна приложения
+     * @throws IOException если возникают проблемы с закрузкой фхмл файла
+     */
     public void start() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(CreateSimulatorView.class.getResource("create-simulator-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
@@ -32,6 +39,10 @@ public class ViewHandler {
         stage.show();
     }
 
+    /**
+     * Открытие окна симуляции работы лифта
+     * @throws IOException если возникают проблемы с закрузкой фхмл файла
+     */
     public void openSimulator() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ElevatorsView.class.getResource("elevators-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 600);

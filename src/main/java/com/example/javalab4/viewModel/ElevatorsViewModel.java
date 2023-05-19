@@ -33,19 +33,36 @@ public class ElevatorsViewModel {
     private final SimulatorModel model;
     private final ViewHandler viewHandler;
 
+    /**
+     * Конструктор класса, связывает его с модельнб и вью хендлером
+     * @param model модель, где происходит управление потоками
+     * @param viewHandler вью хендлер, в котором происходит управление вьюшками
+     */
     public ElevatorsViewModel(SimulatorModel model, ViewHandler viewHandler) {
         this.model = model;
         this.viewHandler = viewHandler;
     }
 
+    /**
+     * Функция рассчитывает положение крыши, в зависимости от количества этажей в доме
+     * @return координату У у крыши
+     */
     public double getRoofY() {
         return 600 - 100 - 25 * model.getFloors();
     }
 
+    /**
+     * Функция рассчитывает ваысоту дома (без крыши), в зависимости от количества этажей
+     * @return высоту дома
+     */
     public double getHeight() {
         return 24.5 * model.getFloors();
     }
 
+    /**
+     * Функция заполняет VBox картинками этажей
+     * @param mine объект интерфейса, который отвечает за отображение этажей и шахты лифта
+     */
     public void fillMine(VBox mine) {
         Image image = new Image(Objects.requireNonNull(Application.class.getResourceAsStream("img/floor.png")));
         for (int i = 0; i < model.getFloors(); i++) {
@@ -53,11 +70,20 @@ public class ElevatorsViewModel {
         }
     }
 
+    /**
+     * Функция заполняет VBox номерами этажей
+     * @param numbers объект интерфейса, который отвечает за отображение номеров каждого этаджа
+     */
     public void fillNumbers(VBox numbers) {
         for (int i = 0; i < model.getFloors(); i++)
             numbers.getChildren().add(createLabel(model.getFloors() - i));
     }
 
+    /**
+     * Функция создает Label с текстом, соответствующем номеру этажа
+     * @param number номер этажа
+     * @return Label, отображающий номер этажа
+     */
     private Label createLabel(Integer number) {
         Label label = new Label("" + number);
         label.setStyle("-fx-font-family: 'Poppins SemiBold'");
@@ -70,10 +96,17 @@ public class ElevatorsViewModel {
         return label;
     }
 
+    /**
+     * Метод вызывает в модели функцию запуска симуляции
+     */
     public void startSimulating(){
         model.startSimulating(firstElevatorYProperty, secondElevatorYProperty, listProperty);
     }
 
+    /**
+     * Метод определяет, как будет выглядеть каждая ячейка ListCell листа с запросами
+     * @return фабрику ячеек
+     */
     public ListCell<Request> getCellFactory() {
         return new ListCell<>() {
             private final Label label = new Label();
@@ -84,7 +117,7 @@ public class ElevatorsViewModel {
                     Platform.runLater(() -> setGraphic(null));
                 } else {
                     Platform.runLater(() -> label.setText(prepareRequestToBeShown(item)));
-                    Platform.runLater(() -> label.setPrefWidth(300));
+                    Platform.runLater(() -> label.setPrefWidth(330));
                     Platform.runLater(() -> label.setAlignment(Pos.CENTER));
                     Platform.runLater(() -> setGraphic(label));
                 }
@@ -92,8 +125,13 @@ public class ElevatorsViewModel {
         };
     }
 
+    /**
+     * Функция подготавливает строку для отображения важой информации о заявке
+     * @param request запрос на лифт
+     * @return строка, с указанием, с какого этажи и на какой нужно проехать, а так же, какой лифт взял ее в работу
+     */
     private String prepareRequestToBeShown(Request request) {
-        return request.getStartFloor() + " --> " + request.getEndFloor() + "    list: " +
+        return request.getStartFloor() + " --> " + request.getEndFloor() + "    lift: " +
                 (request.getElevatorNumber() != 0 ? request.getElevatorNumber() : "no");
     }
 }

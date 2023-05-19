@@ -32,7 +32,7 @@
          </StackPane.margin>
       </AnchorPane>
    </StackPane>
-   <Button layoutX="616.0" layoutY="485.0" mnemonicParsing="false" onAction="#onStartSimulatingClicked" text="Start Simulating" />
+   <Button fx:id="startButton" focusTraversable="false" layoutX="616.0" layoutY="485.0" mnemonicParsing="false" onAction="#onStartSimulatingClicked" text="Start Simulating" />
    <Label alignment="CENTER" layoutX="520.0" layoutY="50.0" prefHeight="75.0" prefWidth="350.0" styleClass="header" text="REQUESTS" />
    <ListView fx:id="requestListView" layoutX="520.0" layoutY="125.0" prefHeight="350.0" prefWidth="350.0" />
 </AnchorPane>

@@ -13,6 +13,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Класс модели, отвечает за всю "бизнес-логику" приложения
+ */
 @Getter
 @NoArgsConstructor
 public class SimulatorModel {
@@ -24,13 +27,23 @@ public class SimulatorModel {
     private final CopyOnWriteArrayList<Request> waitingList = new CopyOnWriteArrayList<>();
     private ListProperty<Request> listProperty;
 
+    /**
+     * Заполняет необходимые поля класса
+     * @param numberOfFloors количество этажей в доме, которое ввел пользователь
+     * @param numberOfMilliseconds интервал генерации заявки на лифт
+     */
     public void fillData(Integer numberOfFloors, Integer numberOfMilliseconds) {
         floors = numberOfFloors;
         requestTime = numberOfMilliseconds;
         executor = Executors.newFixedThreadPool(2);
     }
 
-
+    /**
+     * Метод срабатывает при запуске симуляции лифтов
+     * @param first свойство У координаты первого лифта
+     * @param second свойство У координаты второго лифта
+     * @param listProperty свойство, которое отвечает за список заявок на работу лифта
+     */
     public void startSimulating(DoubleProperty first, DoubleProperty second, ListProperty<Request> listProperty) {
         this.listProperty = listProperty;
 
@@ -41,25 +54,25 @@ public class SimulatorModel {
         startRequestFlow();
     }
 
+    /**
+     * Метод создает и запускает поток на генерацию заявок для лифта
+     */
     private void startRequestFlow() {
         Thread thread = new Thread(() -> {
             System.out.println("Поток запущен");
             try {
                 Random random = new Random();
+
                 while (true) {
                     int start = random.nextInt(1, floors + 1);
                     int end = random.nextInt(1, floors + 1);
                     while (start == end) {
                         end = random.nextInt(1, floors + 1);
                     }
-                    synchronized (waitingList) {
-                        for (Request req : waitingList) {
-                            checkRequest(req, true);
-                        }
-                    }
-                    checkRequest(buildRequest(start, end), false);
-                    Thread.sleep(requestTime);
+
+                    checkRequests(start, end);
                 }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -68,7 +81,28 @@ public class SimulatorModel {
         thread.start();
     }
 
-    private void checkRequest(Request request, Boolean isInList) {
+    /**
+     * Мкетод осуществляет проверку всех заявок излиста ожидания на то, может ли какой-то лифт ее взять, после чего собирает новую заявку из случайных чисел
+     * @param start начальный этаж
+     * @param end конечный этаж
+     * @throws InterruptedException вылетает при проверке, спит ли этот поток (если да, то выбрасывается исключение)
+     */
+    private void checkRequests(Integer start, Integer end) throws InterruptedException {
+        synchronized (waitingList) {
+            for (Request req : waitingList) {
+                distributionRequest(req, true);
+            }
+        }
+        distributionRequest(buildRequest(start, end), false);
+        Thread.sleep(requestTime);
+    }
+
+    /**
+     * Метод рассчитывает время, необходимое лифту на обработку заявки, выбирает наилучшый лифт и либо добавляет к его задачам эту, либо если лифт свободен, то создает новый ElevatorTask. Однако есои ни один лифт не может взять эту заявку, то она отправляется в лист ожиданий
+     * @param request запрос пользователя
+     * @param isInList это новый запрос или взял из листа ожидания
+     */
+    private void distributionRequest(Request request, Boolean isInList) {
         int time1 = Math.abs(elevator1.getCurrentFloor() - request.getStartFloor()) + 
                 Math.abs(request.getStartFloor() - request.getEndFloor());
         int time2 = Math.abs(elevator2.getCurrentFloor() - request.getStartFloor()) + 
@@ -76,19 +110,16 @@ public class SimulatorModel {
 
         if (elevator1.isEmpty() && elevator2.isEmpty()) {
             createNewTask(time2 >= time1 ? elevator1 : elevator2, request);
-            if (isInList)
-                removeRequest(request);
+            if (isInList) removeRequest(request);
         }
         else {
             int direction = request.getEndFloor() > request.getStartFloor() ? 1 : -1;
-            if (cheeck(request, time1, time2, direction, elevator1, elevator2)) {
-                if (isInList)
-                    removeRequest(request);
+            if (chooseCorrectLift(request, time1, time2, direction, elevator1, elevator2)) {
+                if (isInList) removeRequest(request);
                 return;
             }
-            if (cheeck(request, time1, time2, direction, elevator2, elevator1)) {
-                if (isInList)
-                    removeRequest(request);
+            if (chooseCorrectLift(request, time1, time2, direction, elevator2, elevator1)) {
+                if (isInList) removeRequest(request);
                 return;
             }
 
@@ -99,13 +130,27 @@ public class SimulatorModel {
         }
     }
 
+    /**
+     * Если лифт взял заявку из листа ожидания, то она удаляется от туда
+     * @param request заявка
+     */
     private void removeRequest(Request request) {
         synchronized (waitingList) {
             waitingList.remove(request);
         }
     }
 
-    private boolean cheeck(Request request, int time1, int time2, int direction, Elevator elevator1, Elevator elevator2) {
+    /**
+     * На основе данных о заявке, метод выбирает, эсли это возможно, к какому лифту ее отнести
+     * @param request заявка на передвижение на лифте
+     * @param time1 время, необходимое первому лифту для выполнения заявки
+     * @param time2 время, необходимое второму лифту для выполнения заявки
+     * @param direction направление движения
+     * @param elevator1 первый лифт
+     * @param elevator2 второй лифт
+     * @return true, если заявка была назначана какому-то из лифтов, и false в обратном случае
+     */
+    private boolean chooseCorrectLift(Request request, int time1, int time2, int direction, Elevator elevator1, Elevator elevator2) {
         if ((time2 >= time1 ? elevator1 : elevator2).getDirection() == direction) {
             int cur = (time2 >= time1 ? elevator1 : elevator2).getCurrentFloor();
             if ((direction == 1 && request.getStartFloor() >= cur) || 
@@ -121,6 +166,11 @@ public class SimulatorModel {
         return false;
     }
 
+    /**
+     * Метод создает новую задачу для лифта, который сейчас не двигается
+     * @param elevator сводобный лифт
+     * @param request заявка на передвижение по лифту
+     */
     private void createNewTask(Elevator elevator, Request request) {
         System.out.println("create");
         elevator.setDirection(request.getEndFloor() > request.getStartFloor() ? 1 : -1);
@@ -130,12 +180,23 @@ public class SimulatorModel {
         executor.submit(elevatorTask);
     }
 
+    /**
+     * Метод добавляет заявку к уже работающему лифту
+     * @param elevator лифт, который находится в движении
+     * @param request заявка на передвижение по лифту
+     */
     private void addTargets(Elevator elevator, Request request) {
         System.out.println("add");
         request.setElevatorNumber(elevator.getNumberOfLift());
         elevator.addTarget(request);
     }
 
+    /**
+     * Метод создает заявку
+     * @param start начальный этаж
+     * @param end конечный этаж
+     * @return заявку на передвижение по лифту
+     */
     private Request buildRequest(Integer start, Integer end) {
         Request request = new Request();
         System.out.println(start + " " + end);
