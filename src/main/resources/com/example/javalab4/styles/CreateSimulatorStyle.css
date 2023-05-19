@@ -1,0 +1,60 @@
+@font-face {
+    font-family: 'Poppins Regular';
+    src: url('../fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins Medium';
+    src: url('../fonts/Poppins-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins SemiBold';
+    src: url('../fonts/Poppins-SemiBold.ttf');
+}
+
+.background {
+    -fx-background-image: url('../img/backgopund.png');
+    -fx-background-radius: 30px;
+}
+
+.header {
+    -fx-font-family: "Poppins SemiBold";
+    -fx-font-size: 50px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.header2 {
+    -fx-font-family: "Poppins Medium";
+    -fx-font-size: 13px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.text-field {
+    -fx-background-color: #005418;
+    -fx-background-radius: 15px;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 17px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.loginPane {
+    -fx-background-color: #0E7410;
+    -fx-opacity: 70%;
+}
+
+.button {
+    -fx-background-color: #20C24D;
+    -fx-background-radius: 15px;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 17px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.button:hover {
+    -fx-background-color: #45320D;
+}
+
+.button:focused {
+    -fx-background-color: #201707;
+}

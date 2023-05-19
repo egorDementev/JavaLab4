@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="background" stylesheets="@styles/CreateSimulatorStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javalab4.view.CreateSimulatorView">
+   <Pane layoutX="250.0" layoutY="100.0" prefHeight="400.0" prefWidth="500.0" styleClass="loginPane">
+      <Label layoutX="56.0" layoutY="40.0" styleClass="header" text="LIFT SIMULATOR" />
+      <Label layoutX="165.0" layoutY="140.0" styleClass="header2" text="Input the number of floors" />
+      <TextField fx:id="numberOfFloors" alignment="CENTER" layoutX="100.0" layoutY="164.0" prefHeight="40.0" prefWidth="300.0" promptText="number between 15 and 20" />
+      <Label layoutX="164.0" layoutY="230.0" styleClass="header2" text="Interval between requests" />
+      <TextField fx:id="requestsTime" alignment="CENTER" layoutX="100.0" layoutY="254.0" prefHeight="40.0" prefWidth="300.0" promptText="number in millisecond" />
+      <Button layoutX="100.0" layoutY="320.0" mnemonicParsing="false" onAction="#onCreateSimulatorClicked" prefHeight="40.0" prefWidth="300.0" text="create simulator" />
+   </Pane>
+   <Label fx:id="errorMessage" alignment="CENTER" layoutX="250.0" layoutY="511.0" prefHeight="19.0" prefWidth="500.0" style="-fx-text-fill: red;" styleClass="header2" />
+</AnchorPane>
