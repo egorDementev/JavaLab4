@@ -1,17 +1,14 @@
 package com.example.javalab4;
 
-import com.example.javalab4.model.SimulatorModel;
-import javafx.application.Application;
+import com.example.javalab4.application.StartApplication;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class StartApplication extends Application {
-    public SimulatorModel model;
+public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
-        model = new SimulatorModel(stage);
-
+        StartApplication.start(stage);
     }
 
     public static void main(String[] args) {

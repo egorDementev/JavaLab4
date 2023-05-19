@@ -1,38 +1,45 @@
 package com.example.javalab4.application;
 
-import com.example.javalab4.viewModel.ElevatorsViewModel;
-import javafx.beans.property.DoubleProperty;
+import lombok.Setter;
 
-public class Elevator implements Runnable {
-    private final DoubleProperty layoutY;
+import java.util.Objects;
+
+@Setter
+public class ElevatorTask implements Runnable {
     private final Integer numberOfFloors;
-    private Integer currentFloor;
     private final Integer speed;
+    private final Elevator elevator;
 
-    public Elevator(Integer speed, Integer floor, Integer floors, DoubleProperty property) {
+    public ElevatorTask(Elevator elevator, Integer speed, Integer floors) {
         this.speed = speed;
-        this.currentFloor = floor;
         this.numberOfFloors = floors;
-        this.layoutY = property;
+        this.elevator = elevator;
     }
 
     public double getCoordinate() {
-        return (24.5 * numberOfFloors) - (currentFloor * 24.5);
+        return (24.5 * numberOfFloors) - (elevator.getCurrentFloor() * 24.5);
     }
 
     @Override
     public void run() {
         try {
-            int destination = 1;
-            while (true) {
-                if (currentFloor == 1 || currentFloor.equals(numberOfFloors)) {
-                    destination *= -1;
-                }
-                currentFloor += destination;
+            while (!elevator.isEmpty()) {
+                Request request = elevator.getTargetList().get(0);
+                int destination = elevator.getCurrentFloor() >
+                        (request.isInWork() ? request.getEndFloor() : request.getStartFloor()) ? -1 : 1;
+                elevator.changeCurrentFloor(destination);
                 Thread.sleep(speed);
-                layoutY.set(getCoordinate());
-                System.out.println("floor" + currentFloor);
+                elevator.getLayoutY().set(getCoordinate());
+
+                if (Objects.equals(elevator.getCurrentFloor(), request.isInWork() ? request.getEndFloor() : request.getStartFloor())) {
+                    Thread.sleep(300);
+                    if (request.isInWork())
+                        elevator.deleteTarget();
+                    else request.setInWork(true);
+                }
             }
+
+            elevator.setDirection(0);
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

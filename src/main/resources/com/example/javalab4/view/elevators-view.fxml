@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
-
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" styleClass="background" stylesheets="@../styles/CreateSimulatorStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javalab4.view.ElevatorsView">
+   <ImageView fx:id="roof" fitHeight="70.0" fitWidth="200.0" layoutX="123.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@../img/roof.png" />
+   </ImageView>
+   <StackPane fx:id="lift1" layoutX="123.0" prefWidth="100.0">
+      <VBox fx:id="mine1" layoutX="50.0" prefWidth="50.0" spacing="-0.5" style="-fx-background-color: transparent;" />
+      <VBox fx:id="numbers1" prefWidth="100.0" style="-fx-background-color: transparent;" />
+      <AnchorPane layoutX="50.0" prefWidth="50.0" style="-fx-background-color: transparent;">
+         <ImageView fx:id="elevator1" fitHeight="25.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+         <Image url="@../img/elevator.png" />
+      </ImageView>
+         <StackPane.margin>
+            <Insets left="50.0" />
+         </StackPane.margin></AnchorPane>
+   </StackPane>
+   <StackPane fx:id="lift2" layoutX="223.0" prefWidth="100.0">
+      <VBox fx:id="mine2" layoutX="50.0" prefWidth="50.0" spacing="-0.5" style="-fx-background-color: transparent;" />
+      <VBox fx:id="numbers2" prefWidth="100.0" style="-fx-background-color: transparent;" />
+      <AnchorPane prefWidth="100.0" style="-fx-background-color: transparent;">
+         <ImageView fx:id="elevator2" fitHeight="25.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../img/elevator.png" />
+         </ImageView>
+         <StackPane.margin>
+            <Insets left="50.0" />
+         </StackPane.margin>
+      </AnchorPane>
+   </StackPane>
+   <Button layoutX="616.0" layoutY="485.0" mnemonicParsing="false" onAction="#onStartSimulatingClicked" text="Start Simulating" />
+   <Label alignment="CENTER" layoutX="520.0" layoutY="50.0" prefHeight="75.0" prefWidth="350.0" styleClass="header" text="REQUESTS" />
+   <ListView fx:id="requestListView" layoutX="520.0" layoutY="125.0" prefHeight="350.0" prefWidth="350.0" />
 </AnchorPane>
